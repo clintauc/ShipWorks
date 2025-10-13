@@ -1,0 +1,151 @@
+<!-- GENARATE BARCODE -->
+
+<table style="width:{$pageWidth};" align="right">
+    <td style="width: 70%;"></td>
+        <td>Order #: 
+            <xsl:value-of select="//Order/Number" />-   
+            <xsl:value-of select="//Order/Number" /> W
+            <br /> <br /> 
+            <font size="30" face="Free 3 of 9 Extended" color="black" style="white-space: nowrap;">*<xsl:value-of select="//Order/Number"/>W*</font>
+        </td>
+</table>
+
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sw="http://www.interapptive.com/shipworks" extension-element-prefixes="sw">
+
+    <xsl:output method="xml" encoding="utf-8" indent="yes" />
+
+    <xsl:template match="@* | node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@* | node()[not(@legacy)]" />
+        </xsl:copy>
+    </xsl:template>
+
+</xsl:stylesheet>
+
+<!----------------------------------------------->
+
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sw="http://www.interapptive.com/shipworks" extension-element-prefixes="sw">
+
+    <!-- Imports -->
+    <xsl:import href="System\Snippets" />
+
+    <xsl:output method="html" encoding="utf-8" />
+
+    <!-- Start of template -->
+    <xsl:template match="/"><xsl:apply-templates /></xsl:template>
+    <xsl:template match="ShipWorks">
+
+    <!-- Default font.  Specified as a variable since GMail and Outlook behave differently. -->
+    <xsl:variable name="pageFont" select="'font-family: Tahoma; font-size: 10pt;'" />
+
+    <html>
+
+    <head>
+        <title>Shipment Notification</title>
+
+        <style>
+            body, table { <xsl:value-of select="$pageFont" /> }
+        </style>
+
+    </head>
+
+    <body style="{$pageFont}">
+        
+        <xsl:variable name="order" select="Customer/Order[1]" />
+        <xsl:variable name="address" select="$order/Address[@type='bill']" />
+    
+        <xsl:value-of select="$address/FirstName" />,
+    
+        <p>
+            Your order       
+            
+            <!-- Shared Snippet -->
+            #<xsl:call-template name="OrderNumber">
+                <xsl:with-param name="order" select="$order" />
+            </xsl:call-template> 
+            
+            has shipped and the tracking information is below.  Thank you for your business!
+        </p>
+    
+        <p>
+            <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sw="http://www.interapptive.com/shipworks" extension-element-prefixes="sw">
+    <!-- Imports -->
+    <xsl:import href="System\Snippets" />
+
+    <xsl:output method="html" encoding="utf-8" />
+    <!-- Start of template -->
+    <xsl:template match="/"><xsl:apply-templates /></xsl:template>
+    <xsl:template match="ShipWorks">
+    <html>
+    <head>
+        <title>ShipWorks Template</title>
+    </head>
+    <body>
+        <xsl:variable name="labels" select="(//Primary | //Supplemental)/Label[@orientation = 'tall']" />
+       
+        <xsl:for-each select="$labels">
+               
+            <xsl:variable name="shipment" select="../../../.." />
+            <xsl:variable name="package" select="../../@ID" />
+            <xsl:variable name="packageCount" select="count(../../../Package)" />
+            <TemplatePartition>
+                <center>
+                    <img src="{.}" style="width:384; height:576;" />
+                    
+                    <table style="width: 384; height: 1.75in">
+                        <tr>
+                        
+                            <td style="text-align: center; vertical-align: top;">
+                                <br />
+                            label: <xsl:value-of select="position()" /> of <xsl:value-of select="$packageCount" /><br />
+                            Tracking: <xsl:value-of select="$shipment/Package[@ID=$package]/@TrackingNumber" />
+                                    
+                            </td>
+                        </tr>
+                    </table>
+                    
+
+                </center>
+            </TemplatePartition>
+        </xsl:for-each>
+    </body>
+    </html>
+    </xsl:template>
+</xsl:stylesheet>
+
+<!-- Charges in Item -->
+<xsl:value-of select="Charge[type = 'SHIPPING']/Amo/nt" />
+
+</xsl:template>
+</xsl:stylesheet>
+
+AmazonOrderID
+<!-- //Order/Amazon/AmazonOrderID   -->
+
+Walmart Order ID
+<!-- //Order/Walmart/PurchaseOrderID   -->
+
+osql -S LOKI\SHIPWORKS -U sa -P ShipW@rks1 -H 0000100001 -d ShipWorks -q "SET ANSI_NULLS, QUOTED_IDENTIFIER ON;Update [order] 
+set Custom3='{//Order/Shipment[Status='Processed'][position()=last()]/TotalWeight}' where OrderID={//Order/@ID};"
+
+
+sqlcmd -S THREE\Shipworks -E -H 0000100001 -d ShipWorks -q "/*{//Order/Number}*/ 
+SET QUOTED_IDENTIFIER ON;<xsl:variable name="apos">'"</xsl:variable><xsl:for-each select="//Order/Item[contains(Product/Name,'Pack of')]">
+UPDATE OrderItem SET Quantity=Quantity * {substring-after(Product/Name,'Pack of ')},Name='{translate(substring-before(Product/Name,' Pack of'),$apos,'')}', UnitPrice = (UnitPrice / {substring-after(Product/Name,'Pack of ')}),Custom1='PoQ' 
+WHERE OrderItemID={@ID} AND Custom1 != 'PoQ';</xsl:for-each>"
+
+<!-- Copy Field-->
+SQLCMD -S WIN-1YBTBY3\SHIPWORKS -U sa -P ShipW@rks1 -H 0000100001 -d ShipWorks -Q "SET QUOTED_IDENTIFIER ON;<xsl:for-each 
+select="//Order/Item">UPDATE OrderItem SET HarmonizedCode = (Select Custom1 FROM OrderItem Where OrderItemID={@ID}) 
+FROM OrderItem X JOIN [Order] O ON X.OrderID=O.OrderID WHERE X.OrderItemID = {@ID}<xsl:if test="position()!=last()">;</xsl:if></xsl:for-each>"
+
+
+
+                        <!-- Shared Snippet -->
+                        <xsl:call-template name="OrderNumber">
+                            <xsl:with-param name="order" select=".." />
+                        </xsl:call-template>
+                
+                <xsl:value-of select="ShipmentType" />
+                <xsl:value-of select="TrackingNumber" />
+                <xsl:value-of select="sw:FormatDateTime(ShippedDate, 'MMM dd, yyyy')" />

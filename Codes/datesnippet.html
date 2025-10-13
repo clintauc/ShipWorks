@@ -1,0 +1,59 @@
+<!DOCTYPE xsl:stylesheet[ <!ENTITY nl "&#xd;&#xa;"> ]>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sw="http://www.interapptive.com/shipworks" extension-element-prefixes="sw">
+    <xsl:import href="System\Snippets" />
+    <xsl:output method="text" encoding="utf-8" />
+    <!-- Start of template -->
+    <xsl:template match="/"><xsl:apply-templates /></xsl:template>
+    <xsl:template match="ShipWorks">
+    <xsl:for-each select="//Shipment[Status = 'Processed']">
+        <xsl:variable name="order" select=".." />
+        Date from Note: <xsl:for-each select="../Note">
+            <xsl:if test="contains(Text, 'Ship Date #1')">
+                <xsl:value-of select="sw:FormatDateTime(concat(translate(substring(translate(substring-after(Text, 'Ship Date #1:'), ' ', ''), 1, 10), '/', '-'), ' 12:00:00.000'), 'yyyy-MM-dd HH:mm:ss.fff')" />
+            </xsl:if>
+        </xsl:for-each>
+        
+        OrderDate raw: <xsl:value-of select="../Date" />
+        OrderDate ShortDateTime conv: <xsl:value-of select="sw:ToShortDateTime(../Date)" />
+        
+        OrderDate FormatDateTime conv 24hr: <xsl:value-of select="sw:FormatDateTime(../Date, 'yyyy-MM-dd HH:mm')" />
+      
+        OrderDate FormatDateTime conv AM/PM 12hr: <xsl:value-of select="sw:FormatDateTime(../Date, 'yyyy-MM-dd hh:mm tt')" />
+        
+        OrderDate FormatDateTime conv AM/PM timeZone: <xsl:value-of select="sw:FormatDateTime(../Date, 'yyyy-MM-dd HH:mm tt zz')" />
+        
+        OrderDate FormatDateTime conv AM/PM timeZone 12hr: <xsl:value-of select="sw:FormatDateTime(../Date, 'yyyy-MM-dd hh:mm tt zz')" />
+        
+        OrderDate FormatDateTime conv AM/PM timeZone 24hr: <xsl:value-of select="sw:FormatDateTime(../Date, 'yyyy-MM-dd HH:mm tt zz')" />
+        
+        ----------
+        ShipDate raw: <xsl:value-of select="ShippedDate" />
+        ShipDate ShortDateTime conv: <xsl:value-of select="sw:ToShortDateTime(ShippedDate)" />
+        
+        ShipDate FormatDateTime conv 24hr: <xsl:value-of select="sw:FormatDateTime(ShippedDate, 'yyyy-MM-dd HH:mm')" />
+      
+        ShipDate FormatDateTime conv AM/PM 12hr: <xsl:value-of select="sw:FormatDateTime(ShippedDate, 'yyyy-MM-dd hh:mm tt')" />
+        
+        ShipDate FormatDateTime conv AM/PM timeZone: <xsl:value-of select="sw:FormatDateTime(ShippedDate, 'yyyy-MM-dd HH:mm tt zz')" />
+        
+        ShipDate FormatDateTime conv AM/PM timeZone 12hr: <xsl:value-of select="sw:FormatDateTime(ShippedDate, 'yyyy-MM-dd hh:mm tt zz')" />
+        
+        ShipDate FormatDateTime conv AM/PM timeZone 24hr: <xsl:value-of select="sw:FormatDateTime(ShippedDate, 'yyyy-MM-dd HH:mm tt zz')" />
+        
+        ----------
+        
+        ProcessedDate raw: <xsl:value-of select="ProcessedDate" />
+        ProcessedDate ShortDateTime conv: <xsl:value-of select="sw:ToShortDateTime(ProcessedDate)" />
+        
+        ProcessedDate FormatDateTime conv 24hr: <xsl:value-of select="sw:FormatDateTime(ProcessedDate, 'yyyy-MM-dd HH:mm')" />
+        ProcessedDate FormatDateTime conv AM/PM 12hr: <xsl:value-of select="sw:FormatDateTime(ProcessedDate, 'yyyy-MM-dd hh:mm tt')" />
+        
+        ProcessedDate FormatDateTime conv AM/PM timeZone: <xsl:value-of select="sw:FormatDateTime(ProcessedDate, 'yyyy-MM-dd HH:mm tt zz')" />
+        
+        ProcessedDate FormatDateTime conv AM/PM timeZone 12hr: <xsl:value-of select="sw:FormatDateTime(ProcessedDate, 'yyyy-MM-dd hh:mm tt zz')" />
+        
+        ProcessedDate FormatDateTime conv AM/PM timeZone 24hr: <xsl:value-of select="sw:FormatDateTime(ProcessedDate, 'yyyy-MM-dd HH:mm tt zz')" />
+        <xsl:text>&nl;</xsl:text>
+    </xsl:for-each>       
+    </xsl:template>
+</xsl:stylesheet>

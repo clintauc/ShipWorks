@@ -1,0 +1,89 @@
+<!DOCTYPE xsl:stylesheet[ <!ENTITY nl "&#xd;&#xa;"> ]>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sw="http://www.interapptive.com/shipworks" extension-element-prefixes="sw">
+    <xsl:import href="System\Snippets"/>
+    <xsl:output method="text" encoding="utf-8"/>
+    <!-- Start of template -->
+    <xsl:template match="/">
+        <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="ShipWorks">
+    
+        <!-- Header Line TAB seperated using &#9; -->
+        <xsl:text>order-id&#9;ship-date&#9;carrier-code&#9;carrier-name&#9;tracking-number&#9;ship-method&nl;</xsl:text>
+        
+        <xsl:for-each select="//Shipment[Status = 'Processed']">
+            <xsl:variable name="order" select=".."/>
+            <xsl:variable name="shipment" select="."/>
+            
+            <!-- order-id -->
+            <xsl:value-of select="$order/Amazon/AmazonOrderID"/><xsl:text>&#9;</xsl:text>
+            
+            <!-- ship-date -->
+            <xsl:value-of select="sw:ToShortDate($shipment/ShippedDate)"/><xsl:text>&#9;</xsl:text>
+            
+            <!-- carrier-code -->
+            <xsl:choose>
+            
+                <!-- USPS -->
+                <xsl:when test="ShipmentType[@code = 15] or ShipmentType[@code = 4] or ShipmentType[@code = 13] or ShipmentType[@code = 2] or ShipmentType[@code = 9]">
+                    <xsl:text>USPS&#9;</xsl:text>
+                </xsl:when>
+                
+                <!-- UPS -->
+                <xsl:when test="ShipmentType[@code = 0] or ShipmentType[@code = 1]">
+                    <xsl:text>UPS&#9;</xsl:text>
+                </xsl:when>
+                
+                <!-- FedEx -->
+                <xsl:when test="ShipmentType[@code = 6]">
+                    <xsl:text>FedEx&#9;</xsl:text>
+                </xsl:when>
+                
+                <!-- DHL -->
+                <xsl:when test="ShipmentType[@code = 17] or ShipmentType[@code = 20]">
+                    <xsl:text>DHL&#9;</xsl:text>
+                </xsl:when>
+                
+                <!-- OnTrac -->
+                <xsl:when test="ShipmentType[@code = 11]">
+                    <xsl:text>OnTrac&#9;</xsl:text>
+                </xsl:when>
+                
+                <!-- Other -->
+                <xsl:when test="ShipmentType[@code = 5]">
+                    <xsl:text>Other&#9;</xsl:text>
+                </xsl:when>
+                
+                <!-- carrier-code -->
+                <xsl:otherwise>
+                    <xsl:value-of select="$shipment/ShipmentType"/><xsl:text>&#9;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>         
+            <!-- carrier-name -->
+            <xsl:choose>
+            
+                <!-- Other -->
+                <xsl:when test="ShipmentType[@code = 5]">
+                    <xsl:value-of select="$shipment/Other/Carrier"/><xsl:text>&#9;</xsl:text>
+                </xsl:when>
+                
+                <!-- TAB for blank column -->
+                <xsl:otherwise>
+                    <xsl:text>&#9;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>         
+            
+            <!-- tracking-number-->
+            <xsl:value-of select="TrackingNumber"/><xsl:text>&#9;</xsl:text>
+            
+            <!-- ship-method -->
+            <xsl:value-of select="translate($shipment/ServiceUsed, '®', '')"/>
+            
+            <!-- New Line -->
+            <xsl:text>&nl;</xsl:text>
+            
+        </xsl:for-each>
+        
+    </xsl:template>
+    
+</xsl:stylesheet>
