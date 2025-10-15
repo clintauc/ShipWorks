@@ -50,5 +50,9 @@ FROM OrderItem X JOIN [Order] O ON X.OrderID=O.OrderID WHERE X.OrderItemID = {@I
 <!--Code to call-->
 
 
-<!--Store Name-->
+<!--Store Name Single order-->
 <xsl:value-of select="Store/StoreName" />
+
+<!--Store Name Multiple Order-->
+    <xsl:variable name="storeid" select="@storeID"/>
+        <xsl:value-of select="//Store[@ID = $storeid]/StoreName" /><xsl:text>,</xsl:text>
