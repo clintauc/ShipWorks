@@ -43,3 +43,12 @@ select="//Order/Item">UPDATE OrderItem SET HarmonizedCode = (Select Custom1 FROM
 FROM OrderItem X JOIN [Order] O ON X.OrderID=O.OrderID WHERE X.OrderItemID = {@ID}<xsl:if test="position()!=last()">;</xsl:if></xsl:for-each>"
 
 <!--RUN COMMAND SAMPLES END-->
+
+
+
+
+<!--Code to call-->
+
+
+<!--Store Name-->
+<xsl:value-of select="Store/StoreName" />
